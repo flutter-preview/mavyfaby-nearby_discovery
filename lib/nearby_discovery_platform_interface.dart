@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'nearby_discovery_method_channel.dart';
+import 'nearby_discovery_models.dart';
 
 abstract class NearbyDiscoveryPlatform extends PlatformInterface {
   /// Constructs a NearbyDiscoveryPlatform.
@@ -23,7 +24,11 @@ abstract class NearbyDiscoveryPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<bool?> startDiscovery(String name, String serviceID, NearbyStrategy strategy) {
+    throw UnimplementedError('startDiscovery() has not been implemented.');
+  }
+
+  Future<bool?> stopDiscovery() {
+    throw UnimplementedError('stopDiscovery() has not been implemented.');
   }
 }
