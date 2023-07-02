@@ -24,11 +24,27 @@ abstract class NearbyDiscoveryPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<bool?> startDiscovery(String name, String serviceID, NearbyStrategy strategy) {
+  Future<NearbyResult> startDiscovery(String name, String serviceID, NearbyStrategy strategy) {
     throw UnimplementedError('startDiscovery() has not been implemented.');
   }
 
-  Future<bool?> stopDiscovery() {
+  Future<bool> stopDiscovery() {
     throw UnimplementedError('stopDiscovery() has not been implemented.');
+  }
+
+  Future<bool> isLocationPermissionGranted() {
+    throw UnimplementedError('isLocationPermissionGranted() has not been implemented.');
+  }
+
+  Future<bool> isLocationEnabled() {
+    throw UnimplementedError('isLocationEnabled() has not been implemented.');
+  }
+
+  Future<bool> requestLocationPermission() {
+    throw UnimplementedError('requestLocationPermission() has not been implemented.');
+  }
+
+  Future<bool> requestLocationEnable() {
+    throw UnimplementedError('requestLocationEnable() has not been implemented.');
   }
 }

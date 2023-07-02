@@ -3,3 +3,11 @@ enum NearbyStrategy {
   star,
   p2p
 }
+
+enum NearbyResult {
+  locationPermissionNotGranted,
+  locationNotEnabled,
+  bluetoothNotEnabled,
+  success,
+  unknown
+}

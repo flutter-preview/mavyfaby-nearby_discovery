@@ -37,12 +37,30 @@ class NearbyDiscovery {
   }
 
   /// Start discovery process.
-  Future<bool?> startDiscovery(String name, String serviceID, NearbyStrategy strategy) {
+  Future<NearbyResult> startDiscovery(String name, String serviceID, NearbyStrategy strategy) {
     return NearbyDiscoveryPlatform.instance.startDiscovery(name, serviceID, strategy);
   }
 
   //// Stop discovery process.
-  Future<bool?> stopDiscovery() {
+  Future<bool> stopDiscovery() {
     return NearbyDiscoveryPlatform.instance.stopDiscovery();
+  }
+
+  /// Check if location permission is granted.
+  Future<bool> isLocationPermissionGranted() {
+    return NearbyDiscoveryPlatform.instance.isLocationPermissionGranted();
+  }
+
+  /// Check if location is enabled.
+  Future<bool> isLocationEnabled() {
+    return NearbyDiscoveryPlatform.instance.isLocationEnabled();
+  }
+
+  static Future<bool> requestLocationPermission() {
+    return NearbyDiscoveryPlatform.instance.requestLocationPermission();
+  }
+
+  static Future<bool> requestLocationEnable() {
+    return NearbyDiscoveryPlatform.instance.requestLocationEnable();
   }
 }
