@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearby_discovery/nearby_discovery.dart';
 
-NearbyDiscovery nearby = NearbyDiscovery();
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -20,23 +18,21 @@ class _MyAppState extends State<MyApp> {
   bool isLocationEnabled = false;
   bool isDiscoveryStarted = false;
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
   @override
   void initState() {
     super.initState();
 
     // Check if location permission is granted
-    nearby.isLocationPermissionGranted().then((value) {
+    NearbyDiscovery.isLocationPermissionGranted().then((value) {
       setState(() {
-        isLocationPermissionGranted = value != null ? value! : false;
+        isLocationPermissionGranted = value;
       });
     });
 
     // Check if location is enabled
-    nearby.isLocationEnabled().then((value) {
+    NearbyDiscovery.isLocationEnabled().then((value) {
       setState(() {
-        isLocationEnabled = value != null ? value! : false;
+        isLocationEnabled = value;
       });
     });
   }
@@ -95,7 +91,7 @@ class _MyAppState extends State<MyApp> {
                         children: [
                           FilledButton(
                               onPressed: () async {
-                                NearbyResult result = await nearby.startDiscovery("service", "test", NearbyStrategy.cluster);
+                                NearbyResult result = await NearbyDiscovery.startDiscovery("service", "test", NearbyStrategy.cluster);
 
                                 if (result == NearbyResult.success) {
                                   setState(() {
@@ -112,13 +108,7 @@ class _MyAppState extends State<MyApp> {
                                 });
 
                                 if (result == NearbyResult.locationPermissionNotGranted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Failed: Location Permission Not Granted"),
-                                      behavior: SnackBarBehavior.floating,
-                                    )
-                                  );
-
+                                  showSnackBar("Failed: Location Permission Not Granted");
                                   setState(() {
                                     isLocationPermissionGranted = false;
                                   });
@@ -127,13 +117,7 @@ class _MyAppState extends State<MyApp> {
                                 }
 
                                 if (result == NearbyResult.locationNotEnabled) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text("Failed: Location Not Enabled"),
-                                        behavior: SnackBarBehavior.floating,
-                                      )
-                                  );
-
+                                  showSnackBar("Failed: Location Not Enabled.");
                                   setState(() {
                                     isLocationEnabled = false;
                                   });
@@ -145,7 +129,7 @@ class _MyAppState extends State<MyApp> {
                           ),
                           FilledButton.tonal(
                               onPressed: () async {
-                                bool? result = await nearby.stopDiscovery();
+                                bool? result = await NearbyDiscovery.stopDiscovery();
 
                                 if (result) {
                                   setState(() {
@@ -183,6 +167,16 @@ class _MyAppState extends State<MyApp> {
             ),
           );
         },
+      )
+    );
+  }
+
+  /// Show snackbar
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
       )
     );
   }

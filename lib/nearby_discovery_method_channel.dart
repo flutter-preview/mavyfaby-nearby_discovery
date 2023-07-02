@@ -40,7 +40,7 @@ class MethodChannelNearbyDiscovery extends NearbyDiscoveryPlatform {
       }
 
       return NearbyResult.success;
-    } on PlatformException catch (e) {
+    } on PlatformException {
       return NearbyResult.unknown;
     }
   }
