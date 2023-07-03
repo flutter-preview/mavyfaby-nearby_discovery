@@ -1,6 +1,8 @@
 import 'nearby_discovery_platform_interface.dart';
 import 'nearby_discovery_models.dart';
+
 export 'nearby_discovery_models.dart';
+export 'nearby_device.dart';
 
 /// The main class of the plugin.
 /// Inspired from event architecture
