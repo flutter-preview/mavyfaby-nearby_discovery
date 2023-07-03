@@ -55,6 +55,20 @@ public class NearbyDiscoveryPlugin implements FlutterPlugin, MethodCallHandler, 
       return;
     }
 
+    // Start Advertising
+    if (call.method.equals("startAdvertising")) {
+      Log.d("NearbyDiscovery", "startAdvertising");
+      NearbyDiscovery.startAdvertising(channel, context, call, result);
+      return;
+    }
+
+    // Stop Advertising
+    if (call.method.equals("stopAdvertising")) {
+      Log.d("NearbyDiscovery", "stopAdvertising");
+      NearbyDiscovery.stopAdvertising(context, result);
+      return;
+    }
+
     // Is Location Permission Granted
     if (call.method.equals("isLocationPermissionGranted")) {
       Log.d("NearbyDiscovery", "isLocationPermissionGranted");

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -107,31 +108,22 @@ public class NearbyDiscovery {
      * @param result Result
      */
     public static void startDiscovery(MethodChannel channel, @NonNull Context context, @NonNull MethodCall call, @NonNull Result result) {
-        // Get name
-        String name = (String)call.argument("name");
         // Get nearby connection strategy
         Integer strategy = (Integer)call.argument("strategy");
         // Get service id
         String serviceID = (String)call.argument("serviceID");
 
-        // If name is null or empty
-        if (name == null || name.isEmpty()) {
-            // Send error
-            result.error("1", "Name is null or empty", null);
-            return;
-        }
-
         // If strategy is null
         if (strategy == null) {
             // Send error
-            result.error("2", "Strategy is null", null);
+            result.error("ERR_EMPTY_STRATEGY", "Strategy is null", null);
             return;
         }
 
         // If service id is null or empty
         if (serviceID == null || serviceID.isEmpty()) {
             // Send error
-            result.error("3", "ServiceID is null or empty", null);
+            result.error("ERR_EMPTY_SERVICE_ID", "ServiceID is null or empty", null);
             return;
         }
 
@@ -183,10 +175,119 @@ public class NearbyDiscovery {
     }
 
     /**
+     * Start advertising
+     * @param channel Method channel
+     * @param context Context of the application
+     * @param call Method call
+     * @param result Result
+     */
+    public static void startAdvertising(MethodChannel channel, @NonNull Context context, @NonNull MethodCall call, @NonNull Result result) {
+        // Get name
+        String name = (String) call.argument("name");
+        // Get nearby connection strategy
+        Integer strategy = (Integer) call.argument("strategy");
+        // Get service id
+        String serviceID = (String) call.argument("serviceID");
+
+        // If name is null or empty
+        if (name == null || name.isEmpty()) {
+            // Send error
+            result.error("1", "Name is null or empty", null);
+            return;
+        }
+
+        // If strategy is null
+        if (strategy == null) {
+            // Send error
+            result.error("2", "Strategy is null", null);
+            return;
+        }
+
+        // If service id is null or empty
+        if (serviceID == null || serviceID.isEmpty()) {
+            // Send error
+            result.error("3", "ServiceID is null or empty", null);
+            return;
+        }
+
+        // Create advertising options
+        AdvertisingOptions advertisingOptions = new AdvertisingOptions.Builder()
+          .setStrategy(getStrategy(strategy)).build();
+
+        Nearby.getConnectionsClient(context)
+            .startAdvertising(name, serviceID, new ConnectionLifecycleCallback() {
+                /**
+                * On connection initated
+                *
+                * @param endpointId     Endpoint id
+                * @param connectionInfo Connection info
+                */
+                @Override
+                public void onConnectionInitiated(@NonNull String endpointId, @NonNull ConnectionInfo connectionInfo) {
+                    Map<String, Object> args = new HashMap<>();
+                    args.put("endpointId", endpointId);
+                    args.put("endpointName", connectionInfo.getEndpointName());
+
+                    // Send connection initated
+                    channel.invokeMethod("connection", args);
+                }
+
+                /**
+                * On connection result
+                *
+                * @param endpointId           Endpoint id
+                * @param connectionResolution Connection resolution
+                */
+                @Override
+                public void onConnectionResult(@NonNull String endpointId, @NonNull ConnectionResolution connectionResolution) {
+                    Map<String, Object> args = new HashMap<>();
+                    args.put("endpointId", endpointId);
+
+                    // If connection resolution is successful
+                    if (connectionResolution.getStatus().getStatusCode() == ConnectionsStatusCodes.STATUS_OK) {
+                        // Send connection accepted
+                        channel.invokeMethod("accepted", args);
+                    } else {
+                        // Send connection rejected
+                        channel.invokeMethod("rejected", args);
+                    }
+                }
+
+                /**
+                * On disconnected
+                *
+                * @param endpointId Endpoint id
+                */
+                @Override
+                public void onDisconnected(@NonNull String endpointId) {
+                    Map<String, Object> args = new HashMap<>();
+                    args.put("endpointId", endpointId);
+
+                    // Send disconnected
+                    channel.invokeMethod("disconnected", args);
+                }
+            }, advertisingOptions)
+        .addOnSuccessListener(v -> {
+            Log.d("nearby_connections", "startAdvertising");
+            result.success(true);
+        }).addOnFailureListener(e -> {
+            result.error("Failure", e.getMessage(), null);
+        });
+    }
+
+    /**
      * Stop Discovery
      */
     public static void stopDiscovery(@NonNull Context context, @NonNull Result result) {
         Nearby.getConnectionsClient(context).stopDiscovery();
+        result.success(true);
+    }
+
+    /**
+     * Stop Advertising
+     */
+    public static void stopAdvertising(@NonNull Context context, @NonNull Result result) {
+        Nearby.getConnectionsClient(context).stopAdvertising();
         result.success(true);
     }
 

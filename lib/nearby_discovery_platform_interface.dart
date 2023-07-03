@@ -24,7 +24,19 @@ abstract class NearbyDiscoveryPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<NearbyResult> startDiscovery(String name, String serviceID, NearbyStrategy strategy) {
+  void init() {
+    throw UnimplementedError('init() has not been implemented.');
+  }
+
+  Future<NearbyResult> startAdvertising(String name, String serviceID, NearbyStrategy strategy) {
+    throw UnimplementedError('startAdvertising() has not been implemented.');
+  }
+
+  Future<bool> stopAdvertising() {
+    throw UnimplementedError('stopAdvertising() has not been implemented.');
+  }
+
+  Future<NearbyResult> startDiscovery(String serviceID, NearbyStrategy strategy) {
     throw UnimplementedError('startDiscovery() has not been implemented.');
   }
 

@@ -26,14 +26,39 @@ class NearbyDiscovery {
     return _listeners.containsKey(event);
   }
 
+  /// Emit an event.
+  static void emit(String event, dynamic data) {
+    // Check if the event is in the list
+    if (_listeners.containsKey(event)) {
+      // Call the callback function
+      _listeners[event]!(data);
+    }
+  }
+
+  /// Initialize the plugin.
+  static void init() {
+    // Initialize the platform
+    NearbyDiscoveryPlatform.instance.init();
+  }
+
   /// Start discovery process.
-  static Future<NearbyResult> startDiscovery(String name, String serviceID, NearbyStrategy strategy) {
-    return NearbyDiscoveryPlatform.instance.startDiscovery(name, serviceID, strategy);
+  static Future<NearbyResult> startDiscovery(String serviceID, NearbyStrategy strategy) {
+    return NearbyDiscoveryPlatform.instance.startDiscovery(serviceID, strategy);
   }
 
   //// Stop discovery process.
   static Future<bool> stopDiscovery() {
     return NearbyDiscoveryPlatform.instance.stopDiscovery();
+  }
+
+  /// Start advertising process.
+  static Future<NearbyResult> startAdvertising(String name, String serviceID, NearbyStrategy strategy) {
+    return NearbyDiscoveryPlatform.instance.startAdvertising(name, serviceID, strategy);
+  }
+
+  /// Stop advertising process.
+  static Future<bool> stopAdvertising() {
+    return NearbyDiscoveryPlatform.instance.stopAdvertising();
   }
 
   /// Check if location permission is granted.
